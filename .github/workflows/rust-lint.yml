@@ -15,12 +15,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - prepare-deps:
-      uses: ./.github/workflows/rust-base.yml
-      with:
-        build-binary: false
-        use-nightly: true
-    - name: Check code formatting
-      run: cargo +nightly fmt --all -- --check
-    - name: Check cargo clippy warnings
-      run: cargo +nightly clippy --workspace --all-targets --all-features -- -D warnings
+      - name: Prepare environment
+        uses: ./.github/workflows/rust-base.yml
+        with:
+          build-binary: false
+          use-nightly: true
+      - name: Check code formatting
+        run: cargo +nightly fmt --all -- --check
+      - name: Check cargo clippy warnings
+        run: cargo +nightly clippy --workspace --all-targets --all-features -- -D warnings

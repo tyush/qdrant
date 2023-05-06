@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - prepare-deps:
+      - name: Prepare environment
         uses: ./.github/workflows/rust-base.yml
       - name: Run storage compatibility test
         run: ./tests/storage-compat/storage-compatibility.sh
