@@ -15,26 +15,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Install miniml nightly (only for fmt)
-      uses: actions-rs/toolchain@v1
+    - prepare-deps:
+      uses: ./.github/workflows/rust-base.yml
       with:
-        profile: minimal
-        toolchain: nightly
-        components: rustfmt
-    - name: Install minimal stable
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
-        components: rustfmt, clippy
-    - uses: actions/checkout@v3
-    - uses: Swatinem/rust-cache@v2
-      with:
-        key: clippy
-    - name: Install dependencies
-      run: sudo apt-get install clang protobuf-compiler
+        build-binary: false
+        use-nightly: true
     - name: Check code formatting
       run: cargo +nightly fmt --all -- --check
     - name: Check cargo clippy warnings
-      run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+      run: cargo +nightly clippy --workspace --all-targets --all-features -- -D warnings

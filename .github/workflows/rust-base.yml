@@ -1,0 +1,56 @@
+name: Tests
+
+on:
+  workflow_call:
+    inputs:
+      use-nightly:
+        required: false
+        type: boolean
+      build-binary:
+        required: false
+        type: boolean
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  prepare-deps:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+
+    steps:
+    - name: Install minimal stable
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        if: ${{ !inputs.use-nightly }}
+    - name: Install minimal nightly with rust-fmt
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: nightly
+        if: ${{ inputs.use-nightly }}
+        components: rustfmt, clippy
+    - uses: actions/checkout@v3
+    - uses: Swatinem/rust-cache@v2
+    - name: Install Protoc
+      uses: arduino/setup-protoc@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build a Binary
+      run: cargo build
+      if: ${{ inputs.build-binary }}
+    - name: Update Cache
+      uses: Swatinem/rust-cache@v2
+    - uses: actions/checkout@v3
+
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v3
+#     - name: Build
+#       run: docker build . --tag=qdrant

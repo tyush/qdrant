@@ -15,17 +15,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install dependencies
-        run: sudo apt-get install clang git-lfs protobuf-compiler
-      - name: Setup git-lfs
-        run: git lfs install
-      - name: Install minimal stable
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-      - uses: actions/checkout@v3
-      - uses: Swatinem/rust-cache@v2
+      - prepare-deps:
+        uses: ./.github/workflows/rust-base.yml
       - name: Run storage compatibility test
         run: ./tests/storage-compat/storage-compatibility.sh
         shell: bash
