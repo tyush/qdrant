@@ -10,16 +10,17 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  prepare-deps:
+    uses: ./.github/workflows/rust-base.yml
+    with:
+      build-binary: false
+      use-nightly: true
+
   test:
 
     runs-on: ubuntu-latest
 
     steps:
-      - name: Prepare environment
-        uses: ./.github/workflows/rust-base.yml
-        with:
-          build-binary: false
-          use-nightly: true
       - name: Check code formatting
         run: cargo +nightly fmt --all -- --check
       - name: Check cargo clippy warnings
